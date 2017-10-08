@@ -5,6 +5,9 @@ module Github
   class Authorizer
     attr_accessor :config, :client
 
+    BASE_AUTHORIZE_URL    = 'https://github.com/login/oauth/authorize'
+    BASE_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token'
+
     def initialize(config: AppConfig.new, client: Net::HTTP)
       @config = config
       @client = client
@@ -19,15 +22,15 @@ module Github
       Hash[URI.decode_www_form(raw_token)]['access_token']
     end
 
-    def base_authorize_url
-      "https://github.com/login/oauth/authorize"
-    end
-
-    def base_access_token_url
-      'https://github.com/login/oauth/access_token'
-    end
-
     private
+
+      def base_authorize_url
+        BASE_AUTHORIZE_URL
+      end
+
+      def base_access_token_url
+        BASE_ACCESS_TOKEN_URL
+      end
 
       def exchange_auth_code(code)
         uri = URI(base_access_token_url)

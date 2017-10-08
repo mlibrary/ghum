@@ -9,9 +9,8 @@ RSpec.describe Github::Authorizer do
   }
 
   let(:response) { double('response', body: 'access_token=access_token123&token_type=bearer') }
-  let(:client)   { double('HTTP Client', post_form: response ) }
 
-  subject(:authorizer) { Github::Authorizer.new(config: config, client: client) }
+  subject(:authorizer) { Github::Authorizer.new(config: config) }
 
   it 'generates the authorization URL based on config' do
     expect(authorizer.authorize_url).to eq(
@@ -19,18 +18,12 @@ RSpec.describe Github::Authorizer do
   end
 
   it 'exchanges an authorization code for an access token' do
+    client = double('HTTP Client', post_form: response)
+    expect(client).to receive(:post_form)
+
+    authorizer = Github::Authorizer.new(config: config, client: client)
     token = authorizer.access_token(code: 'auth_code123')
     expect(token).to eq('access_token123')
-  end
-
-  describe '#base_authorize_url' do
-    subject { authorizer.base_authorize_url }
-    it { is_expected.to eq('https://github.com/login/oauth/authorize') }
-  end
-
-  describe '#base_access_token_url' do
-    subject { authorizer.base_access_token_url }
-    it { is_expected.to eq('https://github.com/login/oauth/access_token') }
   end
 
 end
