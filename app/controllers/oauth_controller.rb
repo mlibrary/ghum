@@ -4,5 +4,6 @@ class OauthController < ApplicationController
   end
 
   def authorize
+    redirect_to AuthorizeGithub.new(callback_url: oauth_callback_url).call
   end
 end
