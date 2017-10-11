@@ -1,7 +1,7 @@
 require 'github/authorizer'
 
 RSpec.describe Github::Authorizer do
-  let(:config) {
+  let(:cfg) {
     double('OAuth Config',
            client_id: 'abcdef123',
            client_secret: '1234567890abcdef',
@@ -10,7 +10,7 @@ RSpec.describe Github::Authorizer do
 
   let(:response) { double('response', body: 'access_token=access_token123&token_type=bearer') }
 
-  subject(:authorizer) { Github::Authorizer.new(config: config) }
+  subject(:authorizer) { Github::Authorizer.new(config: cfg) }
 
   it 'generates the authorization URL based on config' do
     expect(authorizer.authorize_url).to eq(
@@ -21,10 +21,9 @@ RSpec.describe Github::Authorizer do
     client = double('HTTP Client', post_form: response)
     expect(client).to receive(:post_form)
 
-    authorizer = Github::Authorizer.new(config: config, client: client)
+    authorizer = Github::Authorizer.new(config: cfg, client: client)
     token = authorizer.access_token(code: 'auth_code123')
     expect(token).to eq('access_token123')
   end
-
 end
 
