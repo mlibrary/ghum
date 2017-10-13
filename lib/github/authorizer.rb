@@ -3,14 +3,15 @@ require 'net/http'
 
 module Github
   class Authorizer
-    attr_accessor :config, :client
+    attr_accessor :config, :client, :callback_url
 
     BASE_AUTHORIZE_URL    = 'https://github.com/login/oauth/authorize'
     BASE_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 
-    def initialize(config: AppConfig.new, client: Net::HTTP)
+    def initialize(config:, callback_url:, client: Net::HTTP)
       @config = config
       @client = client
+      @callback_url = callback_url
     end
 
     def authorize_url
@@ -40,7 +41,7 @@ module Github
       end
 
       def authorize_query
-        URI.encode_www_form(client_id: config.client_id, redirect_uri: config.callback_url)
+        URI.encode_www_form(client_id: config.client_id, redirect_uri: callback_url)
       end
   end
 end
