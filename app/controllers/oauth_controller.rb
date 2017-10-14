@@ -10,7 +10,6 @@ class OauthController < ApplicationController
   end
 
   def callback
-    Github.oauth_config
     access_token = ExchangeCode.new(
       authorizer: authorizer,
       callback_url: oauth_callback_url,
@@ -22,10 +21,10 @@ class OauthController < ApplicationController
   private
 
     def authorizer
-      Github::Authorizer.new(config: Github.oauth_config, callback_url: oauth_callback_url)
+      Github::Authorizer.new(callback_url: oauth_callback_url)
     end
 
     def auth_code
-      params[:code]
+      params.require(:code)
     end
 end

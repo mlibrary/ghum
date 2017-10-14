@@ -1,5 +1,6 @@
 require 'uri'
 require 'net/http'
+require 'github/oauth_config'
 
 module Github
   class Authorizer
@@ -8,10 +9,10 @@ module Github
     BASE_AUTHORIZE_URL    = 'https://github.com/login/oauth/authorize'
     BASE_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 
-    def initialize(config:, callback_url:, client: Net::HTTP)
+    def initialize(callback_url:, config: Github.oauth_config, client: Net::HTTP)
+      @callback_url = callback_url
       @config = config
       @client = client
-      @callback_url = callback_url
     end
 
     def authorize_url
